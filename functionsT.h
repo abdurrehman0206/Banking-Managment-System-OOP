@@ -810,7 +810,7 @@ string Statement(unsigned int id)
     return statFile;
 }
 
-bool Customer::customerLogin(unsigned int *n = n, Account *acc = acc)
+bool Customer::customerLogin(unsigned int *n = n)
 {
     cin.sync();
     string pass;
@@ -996,8 +996,9 @@ int mainMenu(Customer *customer = customer, unsigned int *n = n)
     opt = arrowSelection(4);
     return opt;
 }
-int customerMenu(Customer *cusotmer = customer, unsigned int *n = n, unsigned int *id = id)
+int customerMenu(Customer *customer = customer, unsigned int *n = n, unsigned int *id = id)
 {
+
     cin.sync();
     cin.clear();
     bool flip = 0;
@@ -1111,7 +1112,7 @@ label1:
          << "|" << endl;
     line(119);
     color(15);
-    cout << setw(20) << left << "|" << setw(15) << left << acc->firstName << setw(15) << left << acc->lastName << setw(15) << left << acc->accId << setw(15) << left << acc->accBalance << setw(15) << left << acc->accLoan << setw(24) << left << acc->accType << "|" << endl;
+    cout << setw(20) << left << "|" << setw(15) << left << customer->acc->firstName << setw(15) << left << customer->acc->lastName << setw(15) << left << customer->acc->accId << setw(15) << left << customer->acc->accBalance << setw(15) << left << customer->acc->accLoan << setw(24) << left << customer->acc->accType << "|" << endl;
     line(119);
     if (opt == -1 && flip == 0)
     {

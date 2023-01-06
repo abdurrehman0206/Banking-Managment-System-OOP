@@ -45,7 +45,11 @@ private:
     Account *trav;
 
 public:
-    Customer() : head(NULL), tail(NULL), trav(NULL){};
+    Account *acc;
+    Customer() : head(NULL), tail(NULL), trav(NULL)
+    {
+        acc = new Account;
+    };
     bool isEmpty() { return head == NULL ? true : false; }
     void addAccountNode(Account *newAcc);
     void deleteAccountNode(unsigned int);
@@ -56,7 +60,7 @@ public:
     void addAccount(unsigned int *);
     void modifyAccount(unsigned int *);
     void deleteAccount(unsigned int *);
-    bool customerLogin(unsigned int *, Account *);
+    bool customerLogin(unsigned int *);
     void outputDatabase()
     {
         Account *temp = head;
@@ -72,7 +76,6 @@ public:
 };
 
 Customer *customer = new Customer;
-Account *acc = new Account;
 unsigned int *id = new unsigned int(0);
 unsigned int *accNumChk = new unsigned int(0);
 unsigned int *n = new unsigned int(0);

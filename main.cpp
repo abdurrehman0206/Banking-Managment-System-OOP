@@ -3,7 +3,7 @@ int main()
 {
 
     customer->readDatabase();
-    customer->outputDatabase();
+
     int opt, mainOpt;
     char yn;
     bool chk;
@@ -35,7 +35,7 @@ int main()
                     default:
                         break;
                     case 2:
-                        acc->withdrawCash();
+                        customer->acc->withdrawCash();
 
                         system("pause>nul");
                         system("CLS");
@@ -47,23 +47,23 @@ int main()
                         system("CLS");
                         break;
                     case 4:
-                        acc->changePin();
+                        customer->acc->changePin();
 
                         system("pause>nul");
                         system("CLS");
                         break;
                     case 5:
-                        acc->takeLoan();
+                        customer->acc->takeLoan();
                         system("pause>nul");
                         system("CLS");
                         break;
                     case 6:
-                        acc->payLoan();
+                        customer->acc->payLoan();
                         system("pause>nul");
                         system("CLS");
                         break;
                     case 7:
-                        acc->printStatement();
+                        customer->acc->printStatement();
                         system("pause>nul");
                         system("CLS");
                         break;
