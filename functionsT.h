@@ -93,6 +93,7 @@ void Customer::deleteAccountNode(unsigned int pos)
 }
 Account *Customer::searchAccountNode(unsigned int pos)
 {
+   
     if (isEmpty())
     {
         accountFailure();
@@ -103,7 +104,7 @@ Account *Customer::searchAccountNode(unsigned int pos)
         trav = head;
         while (trav != NULL)
         {
-            if (trav->accId == pos)
+            if (trav->accId == pos + 1)
             {
                 return trav;
             }

@@ -46,10 +46,9 @@ private:
 
 public:
     Account *acc;
-    Customer() : head(NULL), tail(NULL), trav(NULL)
-    {
-        acc = new Account;
-    };
+    Customer() : head(NULL), tail(NULL), trav(NULL), acc(NULL){
+
+                                                     };
     bool isEmpty() { return head == NULL ? true : false; }
     void addAccountNode(Account *newAcc);
     void deleteAccountNode(unsigned int);
