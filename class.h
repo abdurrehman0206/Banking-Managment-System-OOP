@@ -25,8 +25,8 @@ struct Account
     void outputData() const;
     void outputInfo() const;
     int accTypeChk();
-    // void receiveCash(unsigned int tempBalance) { accBalance += tempBalance; }
-    // void addLoan(unsigned int tempLoan) { accLoan += tempLoan; }
+    void receiveCash(unsigned int tempBalance) { accBalance += tempBalance; }
+    void addLoan(unsigned int tempLoan) { accLoan += tempLoan; }
     void withdrawCash();
     void transferCash();
     void takeLoan();
@@ -55,11 +55,12 @@ public:
     Account *searchAccountNode(unsigned int);
     void readDatabase(unsigned int *, unsigned int *);
     void updateDatabase(unsigned int *);
-    int idChk(unsigned int *, int);
     void addAccount(unsigned int *);
     void modifyAccount(unsigned int *);
     void deleteAccount(unsigned int *);
     bool customerLogin(unsigned int *);
+    void alotCash(unsigned int *);
+    void alotLoan(unsigned int *);
     void outputDatabase()
     {
         Account *temp = head;
@@ -69,9 +70,6 @@ public:
             temp = temp->next;
         }
     }
-
-    // friend ofstream &operator<<(ofstream &, Customer *);
-    // friend ifstream &operator>>(ifstream &, Customer *);
 };
 
 Customer *customer = new Customer;

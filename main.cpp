@@ -1,4 +1,4 @@
-#include "functionsT.h"
+#include "functions.h"
 int main()
 {
 
@@ -41,8 +41,7 @@ int main()
                         system("CLS");
                         break;
                     case 3:
-                        // acc->transferCash();
-
+                        customer->acc->transferCash();
                         system("pause>nul");
                         system("CLS");
                         break;
@@ -102,31 +101,28 @@ int main()
                         break;
                     case 3:
                         customer->modifyAccount();
-                        cout << "Modify Account" << endl;
+
                         system("pause");
                         system("CLS");
                         break;
                     case 4:
                         customer->deleteAccount();
-                        cout << "Delete Account" << endl;
+
                         system("pause");
                         system("CLS");
                         break;
                     case 5:
-                        // customer->alotCash();
-                        cout << "Alot Cash" << endl;
+                        customer->alotCash();
                         system("pause");
                         system("CLS");
                         break;
                     case 6:
-                        // alotLoan();
-                        cout << "Alot Loan" << endl;
+                        customer->alotLoan();
                         system("pause");
                         system("CLS");
                         break;
                     case 7:
                         customer->outputDatabase();
-                        cout << "Output Database" << endl;
                         system("pause");
                         system("CLS");
                         break;

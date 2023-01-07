@@ -1,33 +1,18 @@
 #include "prototype.h"
 void nullifier()
 {
+    customer = NULL;
     id = NULL;
     accNumChk = NULL;
     n = NULL;
     delete id;
     delete accNumChk;
     delete n;
+    delete[] customer;
 }
-// NEW
-
-// NEW END
 //----------------------------------------------------------------
-//  Database Functions Start
-//  ----------------------------------------------------------------
-
-account *Customer::getAccount(int id)
-{
-    account *temp = head;
-    while (temp)
-    {
-        if (temp->accId == id)
-        {
-            return temp;
-        }
-        temp = temp->next;
-    }
-    return NULL;
-}
+// Database Functions Start
+// ----------------------------------------------------------------
 void accSizChk(unsigned int *n = n)
 {
     int count = 0;
@@ -50,73 +35,123 @@ void accSizChk(unsigned int *n = n)
     count--;
     *n = count;
 }
-// NEW ADD FUNCTION
-void Customer ::addAccount(account *node)
+void Customer::addAccountNode(Account *newAcc)
 {
-    account *temp = new account;
-    temp = node;
     if (isEmpty())
     {
-        head = temp;
-        tail = temp;
-        return;
+        head = newAcc;
+        tail = newAcc;
     }
     else
     {
-        tail->next = temp;
-        node->prev = temp;
-        tail = node;
+        tail->next = newAcc;
+        newAcc->prev = tail;
+        tail = newAcc;
     }
 }
-// NEW ADD FUNCTION END
-
-void Customer::readDatabase(unsigned int *n = n, unsigned int *accNumChk = accNumChk)
+void Customer::deleteAccountNode(unsigned int pos)
 {
-    accSizChk(n);
-    account *fetchedAccount = new account;
-    fin.open(database, ios::in);
-    if (fin.is_open())
+    if (isEmpty())
     {
-
-        for (int i = 0; i < *n; i++)
+        accountFailure();
+    }
+    else
+    {
+        trav = head;
+        while (trav != NULL)
         {
-            fin >> fetchedAccount;
-            if (isEmpty())
+            if (trav->accId == pos + 1)
             {
-                head = fetchedAccount;
-                tail = fetchedAccount;
-                fetchedAccount = new account;
+                if (trav == head)
+                {
+                    head = head->next;
+                    head->prev = NULL;
+                    trav = NULL;
+                    delete trav;
+                    break;
+                }
+                else if (trav == tail)
+                {
+                    tail = tail->prev;
+                    tail->next = NULL;
+                    trav = NULL;
+                    delete trav;
+                    break;
+                }
+                else
+                {
+                    trav->prev->next = trav->next;
+                    trav->next->prev = trav->prev;
+                    trav = NULL;
+                    delete trav;
+                    break;
+                }
             }
             else
             {
-                tail->next = fetchedAccount;
-                fetchedAccount->prev = tail;
-                tail = fetchedAccount;
-                fetchedAccount = new account;
+                trav = trav->next;
             }
+        }
+    }
+}
+Account *Customer::searchAccountNode(unsigned int tempId)
+{
+
+    if (isEmpty())
+    {
+        accountFailure();
+    }
+    else
+    {
+        trav = head;
+        while (trav != NULL)
+        {
+            if (trav->accId == tempId)
+            {
+                return trav;
+            }
+            else
+            {
+                trav = trav->next;
+            }
+        }
+    }
+    return NULL;
+}
+void Customer::readDatabase(unsigned int *n = n, unsigned int *accNumChk = accNumChk)
+{
+
+    accSizChk(n);
+    Account *fetchedAcc = new Account;
+    fin.open(database, ios::in);
+    if (fin.is_open())
+    {
+        head = tail = NULL;
+        for (int i = 0; i < *n; i++)
+        {
+            fin >> fetchedAcc;
+            addAccountNode(fetchedAcc);
+            fetchedAcc = new Account;
         }
     }
     else
     {
         databaseFailure();
-        return;
     }
-    
     fin.close();
-    *accNumChk = (tail->accId) + 1;
-    delete fetchedAccount;
+    *accNumChk = tail->accId + 1;
+    delete fetchedAcc;
 }
-
-void Customer::updateDatabase()
+void Customer ::updateDatabase(unsigned int *n = n)
 {
+
     fout.open(database, ios::out | ios::trunc);
     if (fout.is_open())
     {
-        account *temp = head;
-        while (temp)
+        trav = head;
+        for (trav = head; trav != NULL; trav = trav->next)
         {
-            fout << temp;
-            temp = temp->next;
+            fout << trav;
         }
     }
     else
@@ -126,68 +161,225 @@ void Customer::updateDatabase()
     fout.close();
     readDatabase();
 }
-void account ::outputInfo() const
-{
-
-    cout << "First Name: " << firstName << endl;
-    cout << "Last Name: " << lastName << endl;
-    cout << "Account Number: " << accId << endl;
-    cout << "Account Type: " << accType << endl;
-    cout << "Account Balance: " << accBalance << endl;
-    cout << "Account Loan: " << accLoan << endl;
-    cout << endl;
-}
 //----------------------------------------------------------------
 // Database Functions End
 // ----------------------------------------------------------------
 //----------------------------------------------------------------
 // Management Functions Start
 //----------------------------------------------------------------
+void Account::inputData()
+{
+    cout << "Enter First Name : ";
+    getline(cin, firstName);
+    cout << "Enter Last Name : ";
+    getline(cin, lastName);
+    do
+    {
+        cout << "Enter " << firstName << " " << lastName << "'s Account Type : ";
+        getline(cin, accType);
+    } while ((stricmp("platinum", (accType).c_str()) != 0) && (stricmp("gold", (accType).c_str()) != 0) && (stricmp("bronze", (accType).c_str()) != 0) && (stricmp("silver", (accType).c_str()) != 0));
+
+    if (accId == 0)
+    {
+        accId = *accNumChk;
+        *accNumChk += 1;
+    }
+}
+void Account::outputData() const
+{
+    cout << "First Name : " << firstName << endl;
+    cout << "Last Name : " << lastName << endl;
+    cout << "Account ID : " << accId << endl;
+    cout << "Account Type : " << accType << endl;
+    cout << "Balance : " << accBalance << endl;
+    cout << "Loan : " << accLoan << endl;
+}
+void Account::outputInfo() const
+{
+    cout << setw(17) << left << firstName << setw(16) << left << lastName << setw(16) << left << accId << setw(16) << left << accType << setw(16) << left << accBalance << accLoan << endl;
+}
+
+void Customer::addAccount(unsigned int *n = n)
+{
+    Account *newAcc = new Account;
+    newAcc->inputData();
+    addAccountNode(newAcc);
+    updateDatabase(n);
+}
+
+void Customer::modifyAccount(unsigned int *n = n)
+{
+    int tempId;
+    cout << "Enter account ID to modify : ";
+    cin >> tempId;
+    trav = searchAccountNode(tempId);
+    if (!trav)
+    {
+        accountFailure();
+    }
+    return;
+    cin.ignore();
+    trav->inputData();
+    updateDatabase(n);
+}
+void Customer::deleteAccount(unsigned int *n = n)
+{
+    int tempId;
+    cout << "Enter account ID to delete : ";
+    cin >> tempId;
+    trav = searchAccountNode(tempId);
+    if (!trav)
+    {
+        accountFailure();
+        return;
+    }
+    if (!trav)
+    {
+        accountFailure();
+        return;
+    }
+    if (trav->accBalance != 0)
+    {
+        color(12);
+        cout << "Please withdraw all the cash before deleting!" << endl;
+        color(15);
+        return;
+    }
+    if (trav->accLoan != 0)
+    {
+        color(12);
+        cout << "Please pay all the loan before deleting!" << endl;
+        color(15);
+        return;
+    }
+    if (trav)
+    {
+        deleteAccountNode(tempId);
+    }
+    else
+    {
+        databaseFailure();
+    }
+    fout.close();
+    updateDatabase(n);
+}
+void Customer::alotCash(unsigned int *n = n)
+{
+    unsigned int amount = 0;
+    unsigned int tempId = 0;
+    cout << "Enter the ID of the account : ";
+    cin >> tempId;
+    trav = searchAccountNode(tempId);
+    if (!trav)
+    {
+        accountFailure();
+        return;
+    }
+    cout << "ACCOUNT DETAILS" << endl;
+    trav->outputInfo();
+    cout << endl;
+    cout << "Enter amount to alot : ";
+    cin >> amount;
+    if (amount > 0)
+    {
+        acc->receiveCash(amount);
+        transactionSuccess();
+        string statFile = Statement(trav->accId);
+        fout.open(statFile, ios::app | ios::out);
+        if (fout.is_open())
+        {
+            fout << "Received +" << amount << " from Bank " << endl;
+        }
+        else
+        {
+            statementFailure();
+        }
+        fout.close();
+        updateDatabase();
+    }
+    else if (amount <= 0)
+    {
+        invalidAmountFailure();
+    }
+    else
+    {
+        technicalFailure();
+    }
+}
+void Customer::alotLoan(unsigned int *n = n)
+{
+    unsigned int amount = 0;
+    unsigned int tempId = 0;
+    cout << "Enter the ID of the account : ";
+    cin >> tempId;
+    trav = searchAccountNode(tempId);
+    if (!trav)
+    {
+        accountFailure();
+        return;
+    }
+    cout << "ACCOUNT DETAILS" << endl;
+    trav->outputInfo();
+    cout << endl;
+    cout << "Enter amount to alot : ";
+    cin >> amount;
+    if (amount > 0)
+    {
+        trav->receiveCash(amount);
+        trav->addLoan(amount);
+        transactionSuccess();
+        string statFile = Statement(trav->accId);
+        fout.open(statFile, ios::app | ios::out);
+        if (fout.is_open())
+        {
+            fout << "Loan Added +" << amount << endl;
+        }
+        else
+        {
+            statementFailure();
+        }
+        fout.close();
+        updateDatabase();
+    }
+    else if (amount <= 0)
+    {
+        invalidAmountFailure();
+    }
+    else
+    {
+        technicalFailure();
+    }
+}
 
 //----------------------------------------------------------------
 // Management Functions End
 //----------------------------------------------------------------
 
-int Customer ::idChk(unsigned int *n, int tempId)
+int Account::accTypeChk()
 {
-    int pos = 0;
-    account *trav = head;
-    while (trav)
+    unsigned int maxAmount;
+    if ((strcmpi(accType.c_str(), "platinum")) == 0)
     {
-        if (trav->accId == tempId)
-        {
-            return pos;
-        }
-        pos++;
-        trav = trav->next;
+        maxAmount = 100000;
     }
-    return -1;
+    else if ((strcmpi(accType.c_str(), "gold")) == 0)
+    {
+        maxAmount = 75000;
+    }
+    else if ((strcmpi(accType.c_str(), "silver")) == 0)
+    {
+        maxAmount = 50000;
+    }
+    else if ((strcmpi(accType.c_str(), "bronze")) == 0)
+    {
+        maxAmount = 25000;
+    }
+    else
+    {
+        maxAmount = 0;
+    }
+    return maxAmount;
 }
-// int account::accTypeChk()
-// {
-//     unsigned int maxAmount;
-//     if ((strcmpi(accType.c_str(), "platinum")) == 0)
-//     {
-//         maxAmount = 100000;
-//     }
-//     else if ((strcmpi(accType.c_str(), "gold")) == 0)
-//     {
-//         maxAmount = 75000;
-//     }
-//     else if ((strcmpi(accType.c_str(), "silver")) == 0)
-//     {
-//         maxAmount = 50000;
-//     }
-//     else if ((strcmpi(accType.c_str(), "bronze")) == 0)
-//     {
-//         maxAmount = 25000;
-//     }
-//     else
-//     {
-//         maxAmount = 0;
-//     }
-//     return maxAmount;
-// }
 //----------------------------------------------------------------
 // Faliures Start
 //----------------------------------------------------------------
@@ -269,7 +461,258 @@ void transactionFailure()
 //----------------------------------------------------------------
 // Customer Functions Start
 //----------------------------------------------------------------
+void Account::withdrawCash()
+{
+    unsigned int amount = 0;
+    unsigned int limit = 0;
+    cout << "Enter amount to withdraw : ";
+    cin >> amount;
+    limit = accTypeChk();
+    if (amount <= accBalance && amount > 0 && amount <= limit)
+    {
+        accBalance -= amount;
+        transactionSuccess();
+        cout << "Remaining Balance : " << accBalance << endl;
+        string statFile = Statement(accId);
+        fout.open(statFile, ios::out | ios::app);
+        if (fout.is_open())
+        {
+            fout << "Withdrew -" << amount << endl;
+        }
+        else
+        {
+            statementFailure();
+        }
+        fout.close();
+        customer->updateDatabase();
+    }
+    else if (amount <= 0)
+    {
+        invalidAmountFailure();
+    }
+    else if (amount > limit)
+    {
+        limitFailure(limit);
+    }
+    else if (amount > accBalance)
+    {
+        fundFailure();
+    }
+    else
+    {
+        technicalFailure();
+    }
+}
+void Account::transferCash()
+{
+    unsigned int receiverId = 0;
+    unsigned int amount = 0;
+    unsigned int limit = 0;
+    cout << "Enter account ID of the reciever : ";
+    cin >> receiverId;
+    Account *trav = customer->searchAccountNode(receiverId);
+    if (!trav)
+    {
+        accountFailure();
+        return;
+    }
+    if (trav->accId == accId)
+    {
+        color(12);
+        cout << "You cannot send to yourself !" << endl;
+        color(15);
+        return;
+    }
+    cout << "Enter amount to sent to " << trav->firstName << " " << trav->lastName << " : ";
+    cin >> amount;
+    limit = accTypeChk();
+    if (amount <= accBalance && amount > 0 && amount <= limit)
+    {
 
+        transactionSuccess();
+        cout << "Sent " << amount << " to " << trav->firstName << " " << trav->lastName << " " << trav->accId << endl;
+        accBalance -= amount;
+        trav->receiveCash(amount);
+        cout << "Remaining Balance : " << accBalance << endl;
+        customer->updateDatabase();
+        string statFile = Statement(accId);
+        fout.open(statFile, ios::app | ios::out);
+        if (fout.is_open())
+        {
+            fout << "Sent - " << amount << " to " << trav->firstName << " " << trav->lastName << " " << trav->accId << endl;
+        }
+        else
+        {
+            statementFailure();
+        }
+        fout.close();
+        statFile = Statement(trav->accId);
+        fout.open(statFile, ios::app | ios::out);
+        if (fout.is_open())
+        {
+            fout << "Received + " << amount << " from " << firstName << " " << lastName << " " << accId << endl;
+        }
+        else
+        {
+            statementFailure();
+        }
+        fout.close();
+    }
+    else if (amount <= 0)
+    {
+        invalidAmountFailure();
+    }
+    else if (amount > limit)
+    {
+        limitFailure(limit);
+    }
+    else if (amount > accBalance)
+    {
+        fundFailure();
+    }
+    else
+    {
+        technicalFailure();
+    }
+}
+void Account::takeLoan()
+{
+    unsigned int amount = 0;
+    unsigned int limit = 0;
+    cout << "Enter amount to take loan : ";
+    cin >> amount;
+    limit = accTypeChk();
+    if (amount > 0 && amount <= limit)
+    {
+        accBalance += amount;
+        accLoan += amount;
+        transactionSuccess();
+        cout << "You recieved a loan of " << amount << endl;
+        cout << "Remaining Balance : " << accBalance << endl;
+        cout << "Account Loan : " << accLoan << endl;
+        string statFile = Statement(accId);
+        fout.open(statFile, ios::out | ios::app);
+        if (fout.is_open())
+        {
+            fout << "Loan Added + " << amount << endl;
+        }
+        else
+        {
+            statementFailure();
+        }
+        fout.close();
+        customer->updateDatabase();
+    }
+    else if (amount <= 0)
+    {
+        invalidAmountFailure();
+    }
+    else if (amount > limit)
+    {
+        limitFailure(limit);
+    }
+    else
+    {
+        technicalFailure();
+    }
+}
+void Account::payLoan()
+{
+    unsigned int amount = 0;
+    cout << "Enter amount to pay back : ";
+    cin >> amount;
+    if (amount > 0 && amount <= accLoan && amount <= accBalance)
+    {
+        accBalance -= amount;
+        accLoan -= amount;
+        transactionSuccess();
+        cout << "You payed back " << amount << endl;
+        cout << "Remaining Balance : " << accBalance << endl;
+        cout << "Account Loan : " << accLoan << endl;
+        string statFile = Statement(accId);
+        fout.open(statFile, ios::out | ios::app);
+        if (fout.is_open())
+        {
+            fout << "Loan Payed - " << amount << endl;
+        }
+        else
+        {
+            statementFailure();
+        }
+        fout.close();
+        customer->updateDatabase();
+    }
+    else if (amount <= 0)
+    {
+        invalidAmountFailure();
+    }
+    else if (amount > accLoan)
+    {
+        color(12);
+        cout << "You are trying to pay back more then than you owe !" << endl;
+        color(15);
+    }
+    else if (amount > accBalance)
+    {
+        fundFailure();
+    }
+    else
+    {
+        technicalFailure();
+    }
+}
+void Account::changePin()
+{
+    unsigned int tempPin = 0;
+    unsigned int tempPin2 = 0;
+    cout << "Enter last pin : ";
+    cin >> tempPin;
+    if (tempPin == accPin)
+    {
+        cout << "Enter new pin : ";
+        cin >> tempPin;
+        cout << "Enter new pin again : ";
+        cin >> tempPin2;
+        if (tempPin == tempPin2)
+        {
+            color(10);
+            cout << "Pin changed successfully !" << endl;
+            accPin = tempPin;
+            customer->updateDatabase();
+        }
+        else
+        {
+            color(12);
+            cout << "Pin change failed !" << endl;
+        }
+    }
+    else
+    {
+        color(12);
+        cout << "Invalid Pin !" << endl;
+    }
+    color(15);
+}
+void Account::printStatement()
+{
+    string statFile = "";
+    string line = "";
+    statFile = Statement(accId);
+    fin.open(statFile, ios::in);
+    if (fin.is_open())
+    {
+        while (!fin.eof())
+        {
+            getline(fin, line);
+            cout << line << endl;
+        }
+    }
+    else
+    {
+        statementFailure();
+    }
+    fin.close();
+}
 //----------------------------------------------------------------
 // Customer Functions End
 //----------------------------------------------------------------
@@ -314,7 +757,7 @@ string Statement(unsigned int id)
     return statFile;
 }
 
-bool customerLogin(unsigned int *n = n, account *acc = acc)
+bool Customer::customerLogin(unsigned int *n = n)
 {
     cin.sync();
     string pass;
@@ -340,8 +783,8 @@ bool customerLogin(unsigned int *n = n, account *acc = acc)
     line(23);
     g_xy(58, 13);
     cin >> tempId;
-    acc = customer->getAccount(tempId);
-    if (!tempId)
+    acc = searchAccountNode(tempId);
+    if (!acc)
     {
         color(12);
         g_xy(49, 21);
@@ -390,8 +833,7 @@ bool customerLogin(unsigned int *n = n, account *acc = acc)
         g_xy(51, 19);
         cout << "Invalid Pin Format" << endl;
     }
-
-    if (intPass == acc->accPin)
+    if (acc != NULL && intPass == acc->accPin)
     {
         color(10);
         g_xy(52, 21);
@@ -478,7 +920,7 @@ bool adminLogin()
         return false;
     }
 }
-int mainMenu(unsigned int *n = n)
+int mainMenu(Customer *customer = customer, unsigned int *n = n)
 {
     cin.sync();
     cin.clear();
@@ -498,8 +940,9 @@ int mainMenu(unsigned int *n = n)
     opt = arrowSelection(4);
     return opt;
 }
-int customerMenu(unsigned int *n = n, unsigned int *id = id)
+int customerMenu(Customer *customer = customer, unsigned int *n = n, unsigned int *id = id)
 {
+
     cin.sync();
     cin.clear();
     bool flip = 0;
@@ -613,18 +1056,7 @@ label1:
          << "|" << endl;
     line(119);
     color(15);
-    cout << setw(20) << left << "|" << setw(15) << left
-         << acc->firstName
-         << setw(15) << left
-         << acc->lastName
-         << setw(15) << left
-         << acc->accId
-         << setw(15) << left
-         << acc->accType
-         << setw(15) << left
-         << acc->accBalance
-         << setw(24) << left
-         << acc->accLoan << "|" << endl;
+    cout << setw(20) << left << "|" << setw(15) << left << customer->acc->firstName << setw(15) << left << customer->acc->lastName << setw(15) << left << customer->acc->accId << setw(15) << left << customer->acc->accBalance << setw(15) << left << customer->acc->accLoan << setw(24) << left << customer->acc->accType << "|" << endl;
     line(119);
     if (opt == -1 && flip == 0)
     {
@@ -633,7 +1065,7 @@ label1:
     }
     return opt;
 }
-int managementMenu(unsigned int *n = n)
+int managementMenu(Customer *customer = customer, unsigned int *n = n)
 {
     cin.sync();
     cin.clear();
