@@ -282,7 +282,7 @@ void Customer::alotCash(unsigned int *n = n)
     cin >> amount;
     if (amount > 0)
     {
-        acc->receiveCash(amount);
+        trav->receiveCash(amount);
         transactionSuccess();
         string statFile = Statement(trav->accId);
         fout.open(statFile, ios::app | ios::out);
