@@ -9,7 +9,7 @@ void nullifier()
     delete id;
     delete accNumChk;
     delete n;
-    delete[] customer;
+    delete customer;
 }
 //----------------------------------------------------------------
 // Database Functions Start
