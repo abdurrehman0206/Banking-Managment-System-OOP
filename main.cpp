@@ -1,9 +1,7 @@
 #include "functions.h"
 int main()
 {
-
     customer->readDatabase();
-
     int opt, mainOpt;
     char yn;
     bool chk;

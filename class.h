@@ -48,18 +48,7 @@ private:
 
 public:
     Account *acc;
-    Customer() : head(NULL), tail(NULL), trav(NULL), acc(NULL){
-
-                                                     };
-    void printStack()
-    {
-        while (!salaryQue.empty())
-        {
-
-            cout << salaryQue.front() << endl;
-            salaryQue.pop();
-        }
-    }
+    Customer() : head(NULL), tail(NULL), trav(NULL), acc(NULL){};
     bool isEmpty() { return head == NULL ? true : false; }
     void addAccountNode(Account *newAcc);
     void deleteAccountNode(unsigned int);
