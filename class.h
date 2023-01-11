@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
+#include <queue>
 
 using namespace std;
 
@@ -43,17 +44,28 @@ private:
     Account *head;
     Account *tail;
     Account *trav;
+    queue<long int> salaryQue;
 
 public:
     Account *acc;
     Customer() : head(NULL), tail(NULL), trav(NULL), acc(NULL){
 
                                                      };
+    void printStack()
+    {
+        while (!salaryQue.empty())
+        {
+
+            cout << salaryQue.front() << endl;
+            salaryQue.pop();
+        }
+    }
     bool isEmpty() { return head == NULL ? true : false; }
     void addAccountNode(Account *newAcc);
     void deleteAccountNode(unsigned int);
     Account *searchAccountNode(unsigned int);
     void readDatabase(unsigned int *, unsigned int *);
+    void loadSalary();
     void updateDatabase(unsigned int *);
     void addAccount(unsigned int *);
     void modifyAccount(unsigned int *);
@@ -61,6 +73,7 @@ public:
     bool customerLogin(unsigned int *);
     void alotCash(unsigned int *);
     void alotLoan(unsigned int *);
+    void paySalary(unsigned int *);
     void outputDatabase()
     {
         Account *temp = head;
@@ -79,6 +92,7 @@ unsigned int *n = new unsigned int(0);
 ifstream fin;
 ofstream fout;
 const string database = "accounts.dat";
+const string salaryDB = "salary.dat";
 HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 
 ofstream &operator<<(ofstream &FOUT, Account *c)

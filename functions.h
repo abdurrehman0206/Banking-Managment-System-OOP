@@ -1,4 +1,5 @@
 #include "prototype.h"
+// 2147483647
 void nullifier()
 {
     customer = NULL;
@@ -118,6 +119,24 @@ Account *Customer::searchAccountNode(unsigned int tempId)
     }
     return NULL;
 }
+void Customer ::loadSalary()
+{
+    int salaryAmt;
+    fin.open(salaryDB, ios::in);
+    if (fin.is_open())
+    {
+        while (!fin.eof())
+        {
+            fin >> salaryAmt;
+            salaryQue.push(salaryAmt);
+        }
+    }
+    else
+    {
+        databaseFailure();
+    }
+    fin.close();
+}
 void Customer::readDatabase(unsigned int *n = n, unsigned int *accNumChk = accNumChk)
 {
 
@@ -167,6 +186,39 @@ void Customer ::updateDatabase(unsigned int *n = n)
 //----------------------------------------------------------------
 // Management Functions Start
 //----------------------------------------------------------------
+
+void Customer::paySalary(unsigned int *n = n)
+{
+    long int salaryAmt;
+    if (salaryQue.empty())
+    {
+        statementFailure();
+    }
+    else
+    {
+        trav = head;
+        for (trav = head; trav != NULL; trav = trav->next)
+        {
+            salaryAmt = salaryQue.front();
+            salaryQue.pop();
+            trav->accBalance += salaryAmt;
+            string statFile = Statement(trav->accId);
+            fout.open(statFile, ios::out | ios::app);
+            if (fout.is_open())
+            {
+                fout << "Salary Credited - " << salaryAmt << endl;
+            }
+            else
+            {
+                statementFailure();
+            }
+            fout.close();
+        }
+        updateDatabase();
+        transactionSuccess();
+    }
+}
+
 void Account::inputData()
 {
     cout << "Enter First Name : ";

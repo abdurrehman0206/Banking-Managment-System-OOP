@@ -3,7 +3,7 @@ int main()
 {
 
     customer->readDatabase();
-
+    customer->loadSalary();
     int opt, mainOpt;
     char yn;
     bool chk;
@@ -93,7 +93,7 @@ int main()
                     {
                     default:
                         system("CLS");
-                        
+
                         break;
                     case 2:
                         customer->addAccount();
@@ -123,7 +123,7 @@ int main()
                         system("CLS");
                         break;
                     case 7:
-                        customer->outputDatabase();
+                        customer->paySalary();
                         system("pause");
                         system("CLS");
                         break;
