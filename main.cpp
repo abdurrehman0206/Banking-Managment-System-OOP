@@ -3,7 +3,7 @@ int main()
 {
 
     customer->readDatabase();
-    customer->loadSalary();
+
     int opt, mainOpt;
     char yn;
     bool chk;
@@ -123,11 +123,16 @@ int main()
                         system("CLS");
                         break;
                     case 7:
-                        customer->paySalary();
+                        customer->outputDatabase();
                         system("pause");
                         system("CLS");
                         break;
                     case 8:
+                        customer->paySalary();
+                        system("pause");
+                        system("CLS");
+                        break;
+                    case 9:
                         loop_control = false;
                         cin.clear();
                         system("CLS");

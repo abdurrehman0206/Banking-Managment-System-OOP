@@ -160,6 +160,7 @@ void Customer::readDatabase(unsigned int *n = n, unsigned int *accNumChk = accNu
     fin.close();
     *accNumChk = tail->accId + 1;
     delete fetchedAcc;
+    loadSalary();
 }
 void Customer ::updateDatabase(unsigned int *n = n)
 {
@@ -1211,7 +1212,18 @@ label1:
         cout << setw(50) << left << "|" << setw(69) << left << "Account Database"
              << "|" << endl;
     }
-
+    if (opt == 8)
+    {
+        color(10);
+        cout << setw(50) << left << ">" << setw(69) << left << "  Pay Salaries"
+             << "<" << endl;
+        color(15);
+    }
+    else
+    {
+        cout << setw(50) << left << "|" << setw(69) << left << "  Pay Salaries"
+             << "|" << endl;
+    }
     cout << setw(50) << left << "|" << setw(69) << left << "    Go Back"
          << "|" << endl;
 
@@ -1221,7 +1233,7 @@ label1:
     color(15);
     if (opt == -1 && flip == 0)
     {
-        opt = arrowSelection(8);
+        opt = arrowSelection(9);
         goto label1;
     }
     return opt;
